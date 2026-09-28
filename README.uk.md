@@ -1,0 +1,40 @@
+# Bing Enhanced
+
+**Bing Enhanced** — userscript для Tampermonkey, який покращує щоденне користування Bing. Перша функція переписує посилання у відеорезультатах Bing, щоб відкривати відео напряму на YouTube. Публічного релізу поки немає.
+
+[English version](README.md)
+
+## Користувачам
+
+### Функції
+
+Поточна збірка для розробки переписує підтримувані посилання у відеорезультатах пошуку Bing та на сторінці відео, відкриваючи YouTube напряму.
+
+### Встановлення
+
+1. Встановіть [Tampermonkey](https://www.tampermonkey.net/) у Chrome або Edge.
+2. Після першого релізу завантажте `bing-enhanced.user.js` зі сторінки [GitHub Releases](https://github.com/CatDogFishFrog/bing-enhanced/releases).
+3. Відкрийте завантажений файл і підтвердьте встановлення в Tampermonkey.
+
+## Розробникам
+
+Потрібен Node.js версії 22.12 або новішої.
+
+```sh
+npm ci
+npm run check
+npm run build
+```
+
+Готовий userscript створюється у `dist/bing-enhanced.user.js`.
+
+```text
+src/
+  core/       Спільний код запуску
+  features/   Незалежні покращення Bing
+tools/        Окремі інструменти розробки, не входять до релізної збірки
+```
+
+Модулі функцій реєструються у `src/features/index.js`; помилка запуску одного модуля не повинна зупиняти інші. Спостерігачі за DOM варто обмежувати потрібною частиною сторінки. Робочі нотатки див. у [MEMORY.md](MEMORY.md); цей файл локальний і виключений із Git.
+
+Окремий [збирач діагностики сторінки Bing](tools/bing-environment-recorder.user.js) встановлюється незалежно та не потрапляє до основного userscript.

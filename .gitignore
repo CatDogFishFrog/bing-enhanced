@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+.eslintcache
+MEMORY.md
+.agents/
+legacy/
+tools/records/
