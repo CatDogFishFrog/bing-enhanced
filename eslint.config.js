@@ -23,6 +23,7 @@ export default [
         GM_deleteValue: 'readonly',
         GM_getValue: 'readonly',
         GM_registerMenuCommand: 'readonly',
+        GM_unregisterMenuCommand: 'readonly',
         GM_setValue: 'readonly',
       },
     },

@@ -22,7 +22,7 @@ export default defineConfig({
         supportURL: packageInfo.bugs.url,
         updateURL: releaseUrl,
         downloadURL: releaseUrl,
-        grant: ['GM_getValue', 'GM_setValue', 'GM_registerMenuCommand'],
+        grant: ['GM_getValue', 'GM_setValue', 'GM_registerMenuCommand', 'GM_unregisterMenuCommand'],
         match: ['https://www.bing.com/*'],
         'run-at': 'document-start',
         noframes: true,

@@ -1,0 +1,61 @@
+export default {
+  code: 'EN',
+  name: 'English',
+  strings: {
+    settingsLabel: 'Bing Enhanced settings',
+    dialogTitle: 'Module settings',
+    close: 'Close',
+    closeSettings: 'Close settings',
+    language: 'Language',
+    pending: 'Pending',
+    starting: 'Starting',
+    running: 'Running',
+    disabled: 'Disabled',
+    notApplicable: 'Not applicable on this page',
+    error: 'Error',
+    unknownStatus: 'Unknown status',
+    moveUp: 'Move up',
+    moveDown: 'Move down',
+    unsupportedSetting: 'Unsupported setting type.',
+    disableModule: 'Disable module',
+    enableModule: 'Enable module',
+    disable: 'Disable',
+    enable: 'Enable',
+    noModules: 'No registered modules.',
+    debugMenuOn: 'Debug logging: ON',
+    debugMenuOff: 'Debug logging: OFF',
+    debugEnabled: 'Debug logging enabled.',
+    debugDisabled: 'Debug logging disabled.',
+    debugState: 'Debug logging is {state}.',
+    on: 'ON',
+    off: 'OFF',
+  },
+  features: {
+    'video-links-search': {
+      name: 'Bing search video links',
+      description: 'Open supported Bing video results directly on YouTube.',
+      settings: {
+        methodOrder: {
+          label: 'Method order',
+          description: 'If more processing methods are added, they will run in this order until one succeeds.',
+          options: { 'dom-post-processing': 'Process rendered results in the DOM' },
+        },
+      },
+    },
+    'video-links-video-page': {
+      name: 'Bing video page links',
+      description: 'Open supported Bing Video results directly on YouTube.',
+      settings: {
+        methodOrder: {
+          label: 'Method order',
+          description: 'If more processing methods are added, they will run in this order until one succeeds.',
+          options: { 'dom-post-processing': 'Process rendered results in the DOM' },
+        },
+      },
+    },
+    'video-links-tiktok': {
+      name: 'Bing TikTok video links',
+      description: 'Open Bing TikTok video results directly on TikTok.',
+    },
+  },
+};

@@ -16,12 +16,12 @@ export async function runMethods(featureName, methods, context) {
   const logger = context.logger;
 
   for (const method of methods) {
-    logger.info(`Trying method "${method.name}" for "${featureName}".`);
+    logger.debug(`Trying method "${method.name}" for "${featureName}".`);
 
     try {
       const result = await method.run(context);
       if (result?.applied) {
-        logger.info(`Method "${method.name}" applied for "${featureName}".`);
+        logger.debug(`Method "${method.name}" applied for "${featureName}".`);
         return { applied: true, method: method.name, result };
       }
 

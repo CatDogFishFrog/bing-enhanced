@@ -1,5 +1,8 @@
+import { subscribeLanguage, translate } from './localization.js';
+
 const DEBUG_STORAGE_KEY = 'bing-enhanced:debug-logging';
 let debugEnabled = false;
+let menuCommandId;
 
 try {
   debugEnabled = GM_getValue(DEBUG_STORAGE_KEY, false) === true;
@@ -13,7 +16,7 @@ function write(method, args) {
 
 export const logger = {
   debug(...args) {
-    if (debugEnabled) write('debug', args);
+    if (debugEnabled) console.trace('[Bing Enhanced]', ...args);
   },
   info(...args) {
     write('info', args);
@@ -26,21 +29,31 @@ export const logger = {
   },
 };
 
-export function installDebugToggle() {
+function registerDebugMenuCommand() {
   try {
-    GM_registerMenuCommand('Toggle Bing Enhanced debug logging', () => {
-      debugEnabled = !debugEnabled;
-      try {
-        GM_setValue(DEBUG_STORAGE_KEY, debugEnabled);
-      } catch (error) {
-        logger.error('Could not save the debug logging setting.', error);
-      }
-
-      logger.info(`Debug logging ${debugEnabled ? 'enabled' : 'disabled'}.`);
-    });
+    if (menuCommandId !== undefined && typeof GM_unregisterMenuCommand === 'function') {
+      GM_unregisterMenuCommand(menuCommandId);
+    }
+    menuCommandId = GM_registerMenuCommand(
+      translate(debugEnabled ? 'debugMenuOn' : 'debugMenuOff'),
+      () => {
+        debugEnabled = !debugEnabled;
+        try {
+          GM_setValue(DEBUG_STORAGE_KEY, debugEnabled);
+        } catch (error) {
+          logger.error('Could not save the debug logging setting.', error);
+        }
+        logger.info(translate(debugEnabled ? 'debugEnabled' : 'debugDisabled'));
+        registerDebugMenuCommand();
+      },
+    );
   } catch (error) {
     logger.warn('Could not register the debug logging menu command.', error);
   }
+}
 
-  logger.info(`Debug logging is ${debugEnabled ? 'enabled' : 'disabled'}.`);
+export function installDebugToggle() {
+  registerDebugMenuCommand();
+  subscribeLanguage(() => registerDebugMenuCommand());
+  logger.info(translate('debugState', { state: translate(debugEnabled ? 'on' : 'off') }));
 }

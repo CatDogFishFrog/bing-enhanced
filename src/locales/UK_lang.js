@@ -1,0 +1,61 @@
+export default {
+  code: 'UK',
+  name: 'Українська',
+  strings: {
+    settingsLabel: 'Налаштування Bing Enhanced',
+    dialogTitle: 'Налаштування модулів',
+    close: 'Закрити',
+    closeSettings: 'Закрити налаштування',
+    language: 'Мова',
+    pending: 'Очікує запуску',
+    starting: 'Запускається',
+    running: 'Працює',
+    disabled: 'Вимкнено',
+    notApplicable: 'Не для цієї сторінки',
+    error: 'Помилка',
+    unknownStatus: 'Невідомий стан',
+    moveUp: 'Перемістити вище',
+    moveDown: 'Перемістити нижче',
+    unsupportedSetting: 'Непідтримуваний тип налаштування.',
+    disableModule: 'Вимкнути модуль',
+    enableModule: 'Увімкнути модуль',
+    disable: 'Вимкнути',
+    enable: 'Увімкнути',
+    noModules: 'Немає зареєстрованих модулів.',
+    debugMenuOn: 'Налагодження: УВІМКНЕНО',
+    debugMenuOff: 'Налагодження: ВИМКНЕНО',
+    debugEnabled: 'Докладне логування увімкнено.',
+    debugDisabled: 'Докладне логування вимкнено.',
+    debugState: 'Докладне логування: {state}.',
+    on: 'УВІМКНЕНО',
+    off: 'ВИМКНЕНО',
+  },
+  features: {
+    'video-links-search': {
+      name: 'Відеопосилання в пошуку Bing',
+      description: 'Відкриває підтримувані відеорезультати Bing безпосередньо на YouTube.',
+      settings: {
+        methodOrder: {
+          label: 'Порядок методів',
+          description: 'Якщо з’являться додаткові способи обробки, вони запускатимуться в заданому порядку до першого успішного.',
+          options: { 'dom-post-processing': 'Обробка готових результатів у DOM' },
+        },
+      },
+    },
+    'video-links-video-page': {
+      name: 'Відеопосилання на сторінці Bing Video',
+      description: 'Відкриває підтримувані відеорезультати Bing Video безпосередньо на YouTube.',
+      settings: {
+        methodOrder: {
+          label: 'Порядок методів',
+          description: 'Якщо з’являться додаткові способи обробки, вони запускатимуться в заданому порядку до першого успішного.',
+          options: { 'dom-post-processing': 'Обробка готових результатів у DOM' },
+        },
+      },
+    },
+    'video-links-tiktok': {
+      name: 'Відеопосилання TikTok у Bing',
+      description: 'Відкриває відеорезультати TikTok у Bing безпосередньо на TikTok.',
+    },
+  },
+};

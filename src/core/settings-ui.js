@@ -1,3 +1,12 @@
+import {
+  getLanguage,
+  locales,
+  setLanguage,
+  subscribeLanguage,
+  translate,
+  translateFeature,
+} from './localization.js';
+
 const SETTINGS_ROUTES = ['/search', '/videos', '/images', '/news'];
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
 
@@ -62,7 +71,9 @@ const styles = `
     justify-content: space-between;
     gap: 16px;
   }
-  .dialog-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--be-divider); }
+  .dialog-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--be-divider); flex-wrap: wrap; }
+  .language-picker { display: flex; align-items: center; gap: 8px; color: var(--be-foreground-secondary); font-size: 13px; }
+  .language-picker .select-control { width: auto; min-width: 112px; }
   h1 { margin: 0; font-size: 20px; font-weight: 600; }
   .icon-button {
     display: grid;
@@ -137,8 +148,8 @@ function createSettingsHost(manager) {
   const style = makeElement('style', '', styles);
   const gear = makeElement('button', 'gear');
   gear.type = 'button';
-  gear.setAttribute('aria-label', 'Налаштування Bing Enhanced');
-  gear.title = 'Налаштування Bing Enhanced';
+  gear.setAttribute('aria-label', translate('settingsLabel'));
+  gear.title = translate('settingsLabel');
   gear.append(makeIcon('M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm0-6v2m0 15v2m9-9h-2M5 12H3m15.36-6.36-1.42 1.42M7.06 16.94l-1.42 1.42m12.72 0-1.42-1.42M7.06 7.06 5.64 5.64M19 12a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z'));
   shadow.append(style, gear);
 
@@ -152,14 +163,14 @@ function createSettingsHost(manager) {
   }
 
   function statusText(status) {
-    return ({
-      pending: 'Очікує запуску',
-      starting: 'Запускається',
-      running: 'Працює',
-      disabled: 'Вимкнено',
-      'not-applicable': 'Не для цієї сторінки',
-      error: 'Помилка',
-    })[status] || 'Невідомий стан';
+    return translate(({
+      pending: 'pending',
+      starting: 'starting',
+      running: 'running',
+      disabled: 'disabled',
+      'not-applicable': 'notApplicable',
+      error: 'error',
+    })[status] || 'unknownStatus');
   }
 
   function renderMethodOrder(setting, value, featureId) {
@@ -171,8 +182,8 @@ function createSettingsHost(manager) {
       item.append(makeElement('span', '', option.label));
       const actions = makeElement('span', 'method-actions');
       for (const [direction, label, iconPath] of [
-        [-1, 'Перемістити вище', 'm7 14 5-5 5 5'],
-        [1, 'Перемістити нижче', 'm7 10 5 5 5-5'],
+        [-1, translate('moveUp'), 'm7 14 5-5 5 5'],
+        [1, translate('moveDown'), 'm7 10 5 5 5-5'],
       ]) {
         const button = makeElement('button', '');
         button.type = 'button';
@@ -236,7 +247,7 @@ function createSettingsHost(manager) {
     } else if (setting.type === 'method-order') {
       field.append(renderMethodOrder(setting, feature.values[setting.key] || [], feature.id));
     } else {
-      field.append(makeElement('p', 'field-description', 'Непідтримуваний тип налаштування.'));
+      field.append(makeElement('p', 'field-description', translate('unsupportedSetting')));
     }
 
     if (control) {
@@ -263,19 +274,33 @@ function createSettingsHost(manager) {
     dialog.tabIndex = -1;
 
     const header = makeElement('header', 'dialog-header');
-    header.append(makeElement('h1', '', 'Налаштування модулів'));
+    header.append(makeElement('h1', '', translate('dialogTitle')));
     header.firstElementChild.id = 'bing-enhanced-settings-title';
+    const languageLabel = makeElement('label', 'language-picker');
+    languageLabel.append(makeElement('span', '', translate('language')));
+    const languageSelect = makeElement('select', 'select-control');
+    languageSelect.setAttribute('aria-label', translate('language'));
+    for (const locale of locales) {
+      const option = makeElement('option', '', locale.name);
+      option.value = locale.code;
+      languageSelect.append(option);
+    }
+    languageSelect.value = getLanguage();
+    languageSelect.addEventListener('change', () => setLanguage(languageSelect.value));
+    languageLabel.append(languageSelect);
+    header.append(languageLabel);
     const close = makeElement('button', 'icon-button');
     close.type = 'button';
-    close.title = 'Закрити';
-    close.setAttribute('aria-label', 'Закрити налаштування');
+    close.title = translate('close');
+    close.setAttribute('aria-label', translate('closeSettings'));
     close.append(makeIcon('m6 6 12 12M18 6 6 18'));
     close.addEventListener('click', closeDialog);
     header.append(close);
     dialog.append(header);
 
     const modules = makeElement('div', 'modules');
-    for (const feature of manager.getFeaturesState()) {
+    for (const rawFeature of manager.getFeaturesState()) {
+      const feature = translateFeature(rawFeature);
       const module = makeElement('section', 'module');
       const moduleHeader = makeElement('div', 'module-header');
       const text = makeElement('div', '');
@@ -285,11 +310,11 @@ function createSettingsHost(manager) {
       status.dataset.featureStatus = feature.id;
       text.append(status);
       const toggleLabel = makeElement('label', 'toggle');
-      toggleLabel.title = feature.enabled ? 'Вимкнути модуль' : 'Увімкнути модуль';
+      toggleLabel.title = translate(feature.enabled ? 'disableModule' : 'enableModule');
       const toggle = makeElement('input', '');
       toggle.type = 'checkbox';
       toggle.checked = feature.enabled;
-      toggle.setAttribute('aria-label', `${feature.enabled ? 'Вимкнути' : 'Увімкнути'}: ${feature.name}`);
+      toggle.setAttribute('aria-label', `${translate(feature.enabled ? 'disable' : 'enable')}: ${feature.name}`);
       toggle.dataset.featureToggle = feature.id;
       toggle.addEventListener('change', () => manager.setEnabled(feature.id, toggle.checked));
       toggleLabel.append(toggle, makeElement('span', 'track'));
@@ -309,7 +334,7 @@ function createSettingsHost(manager) {
       modules.append(module);
     }
     if (manager.getFeaturesState().length === 0) {
-      modules.append(makeElement('p', 'description', 'Немає зареєстрованих модулів.'));
+      modules.append(makeElement('p', 'description', translate('noModules')));
     }
     dialog.append(modules);
     backdrop.replaceChildren(dialog);
@@ -329,6 +354,7 @@ function createSettingsHost(manager) {
   function updateStatuses(features) {
     if (!backdrop) return;
     for (const feature of features) {
+      const displayFeature = translateFeature(feature);
       const status = [...shadow.querySelectorAll('[data-feature-status]')]
         .find((element) => element.dataset.featureStatus === feature.id);
       if (status) status.textContent = statusText(feature.status);
@@ -342,8 +368,8 @@ function createSettingsHost(manager) {
         .find((element) => element.dataset.featureToggle === feature.id);
       if (toggle) {
         toggle.checked = feature.enabled;
-        toggle.setAttribute('aria-label', `${feature.enabled ? 'Вимкнути' : 'Увімкнути'}: ${feature.name}`);
-        toggle.parentElement.title = feature.enabled ? 'Вимкнути модуль' : 'Увімкнути модуль';
+        toggle.setAttribute('aria-label', `${translate(feature.enabled ? 'disable' : 'enable')}: ${displayFeature.name}`);
+        toggle.parentElement.title = translate(feature.enabled ? 'disableModule' : 'enableModule');
       }
     }
   }
@@ -383,10 +409,16 @@ function createSettingsHost(manager) {
 
   gear.addEventListener('click', openDialog);
   const unsubscribe = manager.subscribe(updateStatuses);
+  const unsubscribeLanguage = subscribeLanguage(() => {
+    gear.setAttribute('aria-label', translate('settingsLabel'));
+    gear.title = translate('settingsLabel');
+    refreshDialog();
+  });
   return {
     host,
     destroy() {
       unsubscribe();
+      unsubscribeLanguage();
       host.remove();
       closeDialog();
     },

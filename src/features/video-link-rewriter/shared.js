@@ -163,7 +163,7 @@ export function createPostProcessingMethod({
 
         if (addedRewrites > 0) {
           rewritten += addedRewrites;
-          logger.info(`Rewrote ${addedRewrites} new video link(s) on ${location.pathname}.`);
+          logger.debug(`Rewrote ${addedRewrites} new video link(s) on ${location.pathname}.`);
         }
       });
 
@@ -184,7 +184,7 @@ export function createPostProcessingMethod({
 
         rewritten += scanRoot(scope, logger, urlResolver, markerKey);
         liveObserver.observe(scope, observerOptions);
-        logger.info(`Watching ${rootSelector}; rewrote ${rewritten} existing video link(s).`);
+          logger.debug(`Watching ${rootSelector}; rewrote ${rewritten} existing video link(s).`);
       });
       scopeObserver.observe(document.documentElement, { childList: true, subtree: true });
       scope = document.querySelector(rootSelector);
@@ -193,7 +193,7 @@ export function createPostProcessingMethod({
         liveObserver.observe(scope, observerOptions);
       }
 
-      logger.info(`Watching ${rootSelector}; rewrote ${rewritten} existing video link(s).`);
+      logger.debug(`Watching ${rootSelector}; rewrote ${rewritten} existing video link(s).`);
       return {
         applied: true,
         cleanup() {
