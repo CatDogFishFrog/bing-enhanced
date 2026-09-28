@@ -1,6 +1,6 @@
 # Bing Enhanced
 
-**Bing Enhanced** is a Tampermonkey userscript for improving everyday use of Bing. Its first feature rewrites Bing video-result links to open YouTube directly. The project does not have a published release yet.
+**Bing Enhanced** is a Tampermonkey userscript for improving everyday use of Bing. Its modules rewrite supported Bing video-result links to open YouTube or TikTok directly. The project does not have a published release yet.
 
 [Українська версія](README.uk.md)
 
@@ -8,7 +8,7 @@
 
 ### Features
 
-The current development build rewrites supported video-result links on Bing search and video pages to open their YouTube URLs directly.
+The current development build rewrites supported YouTube links on Bing search and video pages, and TikTok links on Bing video pages.
 
 ### Install
 
@@ -37,4 +37,4 @@ tools/        Standalone development utilities; not part of the release build
 
 Feature modules are registered in `src/features/index.js`; a module's startup failure should not prevent other modules from starting. The module settings gear appears beside Bing's search form on search, video, image, and news pages. For the descriptor contract, settings schema, method fallback, and cleanup requirements, see [Feature Modules and Settings](docs/feature-modules.md). Keep DOM observers focused on the relevant part of the page. See [MEMORY.md](MEMORY.md) for working notes (local only; excluded from Git).
 
-The optional [Bing page environment recorder](tools/bing-environment-recorder.user.js) is installed separately and is not included in the main userscript.
+The optional [Bing page environment recorder](tools/bing-environment-recorder.user.js) is installed separately and is not included in the main userscript. See the [recorder guide](docs/bing-environment-recorder.md) for capture options, report fields, privacy notes, and Node.js parsing examples.

@@ -1,6 +1,28 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { getYouTubeUrlFromMetadata } from './shared.js';
+import { getTikTokUrlFromMetadata, getYouTubeUrlFromMetadata } from './shared.js';
+
+test('extracts only direct TikTok video URLs from Bing metadata', () => {
+  const tiktokUrl = 'https://www.tiktok.com/@lilyandfox/video/7155923526380293377';
+
+  assert.equal(getTikTokUrlFromMetadata(JSON.stringify({ murl: tiktokUrl })), tiktokUrl);
+  assert.equal(
+    getTikTokUrlFromMetadata(JSON.stringify({ murl: 'https://www.bing.com/video', pgurl: tiktokUrl })),
+    tiktokUrl,
+  );
+  assert.equal(
+    getTikTokUrlFromMetadata(JSON.stringify({ murl: 'https://www.tiktok.com/@lilyandfox' })),
+    null,
+  );
+  assert.equal(
+    getTikTokUrlFromMetadata(JSON.stringify({ murl: 'https://tiktok.com.attacker.example/@user/video/1' })),
+    null,
+  );
+  assert.equal(
+    getTikTokUrlFromMetadata(JSON.stringify({ murl: 'http://www.tiktok.com/@user/video/1' })),
+    null,
+  );
+});
 
 test('extracts a direct YouTube URL from Bing video metadata', () => {
   const metadata = JSON.stringify({
