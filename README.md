@@ -35,6 +35,6 @@ src/
 tools/        Standalone development utilities; not part of the release build
 ```
 
-Feature modules are registered in `src/features/index.js`; a module's startup failure should not prevent other modules from starting. Keep DOM observers focused on the relevant part of the page. See [MEMORY.md](MEMORY.md) for working notes (local only; excluded from Git).
+Feature modules are registered in `src/features/index.js`; a module's startup failure should not prevent other modules from starting. The module settings gear appears beside Bing's search form on search, video, image, and news pages. For the descriptor contract, settings schema, method fallback, and cleanup requirements, see [Feature Modules and Settings](docs/feature-modules.md). Keep DOM observers focused on the relevant part of the page. See [MEMORY.md](MEMORY.md) for working notes (local only; excluded from Git).
 
 The optional [Bing page environment recorder](tools/bing-environment-recorder.user.js) is installed separately and is not included in the main userscript.

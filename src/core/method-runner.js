@@ -1,3 +1,17 @@
+export function orderMethods(methods, preferredOrder = []) {
+  const methodsById = new Map(methods.map((method) => [method.id, method]));
+  const ordered = [];
+  const included = new Set();
+  for (const id of preferredOrder) {
+    const method = methodsById.get(id);
+    if (method && !included.has(method)) {
+      ordered.push(method);
+      included.add(method);
+    }
+  }
+  return [...ordered, ...methods.filter((method) => !included.has(method))];
+}
+
 export async function runMethods(featureName, methods, context) {
   const logger = context.logger;
 

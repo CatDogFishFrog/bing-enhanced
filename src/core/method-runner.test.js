@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { runMethods } from './method-runner.js';
+import { orderMethods, runMethods } from './method-runner.js';
 
 function createLogger() {
   const entries = [];
@@ -44,4 +44,17 @@ test('a failed method falls back and stops after the first applied method', asyn
   assert.equal(result.method, 'post-processing');
   assert.equal(result.applied, true);
   assert.ok(logger.entries.some((entry) => entry[0] === 'warn' && String(entry[1]).includes('injection')));
+});
+
+test('method order honors configured preference and retains omitted fallbacks', () => {
+  const methods = [
+    { id: 'post-processing', name: 'Post-processing' },
+    { id: 'injection', name: 'Injection' },
+    { id: 'observer', name: 'Observer' },
+  ];
+
+  assert.deepEqual(
+    orderMethods(methods, ['injection', 'post-processing', 'missing']),
+    [methods[1], methods[0], methods[2]],
+  );
 });
