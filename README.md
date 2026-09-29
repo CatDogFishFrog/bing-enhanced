@@ -10,13 +10,14 @@
 
 ### Implemented
 
-- Videos in search results or on the Videos tab open directly on YouTube, as they should! The script does not redirect; it replaces the links themselves with the correct ones.
+- Videos in search results or on the Videos tab open instantly on YouTube, just as they should! The script does not redirect; it replaces the links themselves with the correct ones, so videos open right away.
 - TikTok short videos also open directly on TikTok. Their links are replaced too, without a redirect.
+- The Videos, Images, Maps, News, and Flights tabs open in the current window when selected from search results.
+- Search results and all other internal site links open directly instead of going through intermediate analytics links. All navigation is instant, with no analytics loading!
 
 ### Planned
 
 - Add a toggle to choose whether links open in a new window or the current one. By default, Bing always opens them in a new window.
-- Make the Videos, Images, Maps, News, and Flights tabs open in the current window when switching from general search, rather than in a new one. By default, Bing always opens them in a new window.
 - Improve how images open in the Images tab. The current experience is incredibly inconvenient: the image takes up a tiny part of the screen, making it impossible to inspect, and the navigation is awful...
 - Maybe do something with Rewards.
 - Maybe change the search-results layout by combining the best ideas from different search engines.

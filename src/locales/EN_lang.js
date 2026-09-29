@@ -57,5 +57,23 @@ export default {
       name: 'Bing TikTok video links',
       description: 'Open Bing TikTok video results directly on TikTok.',
     },
+    'scope-navigation-current-tab': {
+      name: 'Bing tabs in the current window',
+      description: 'Open the Images, Videos, Maps, News, and Flights tabs in the current window from search results.',
+    },
+    'bing-link-unwrapper': {
+      name: 'Direct search-result links',
+      description: 'Open all search-result links directly instead of routing through Bing\'s intermediate analytics redirects.',
+      settings: {
+        replaceExternalLinks: {
+          label: 'Replace external links',
+          description: 'Replace Bing redirect links that lead to other websites.',
+        },
+        replaceInternalBingLinks: {
+          label: 'Replace internal links',
+          description: 'Replace Bing redirect links that lead to another Bing page.',
+        },
+      },
+    },
   },
 };
