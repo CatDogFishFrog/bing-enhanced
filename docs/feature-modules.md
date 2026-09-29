@@ -62,7 +62,7 @@ Each schema uses a unique `key`, a supported `type`, a user-facing `label`, and 
 
 | Type | Schema-specific properties | Value |
 | --- | --- | --- |
-| `toggle` | Optional `toolbarToggle: { trueLabel, falseLabel, trueIcon, falseIcon }` | Boolean |
+| `toggle` | Optional `toolbarToggle: { trueLabel, falseLabel, trueIcon, falseIcon, routes }` | Boolean |
 | `select` | `options: [{ value, label }]` | One listed option value |
 | `method-order` | `options: [{ value, label }]` | Ordered array of method IDs |
 | `text` | Optional `maxLength` (default 2000), `placeholder` | String |
@@ -70,7 +70,7 @@ Each schema uses a unique `key`, a supported `type`, a user-facing `label`, and 
 
 Invalid or stale stored values are replaced with defaults. A method-order value is filtered to known method IDs, duplicates are removed, and any newly added methods are appended so a stored preference cannot permanently omit a fallback. Unknown setting types are not rendered; add a generic control type to the settings UI only when it is reusable across modules.
 
-A `toggle` may declare `toolbarToggle` metadata to opt into a compact icon control beside the settings gear. Supply localized string keys (`trueLabel`, `falseLabel`) and SVG path data (`trueIcon`, `falseIcon`) for both states. The shared settings UI renders these declarations generically and persists changes through the feature manager; feature IDs and behavior remain outside the UI.
+A `toggle` may declare `toolbarToggle` metadata to opt into a compact icon control beside the settings gear. Supply localized string keys (`trueLabel`, `falseLabel`) and SVG path data (`trueIcon`, `falseIcon`) for both states. Optional `routes` restricts the control to those route prefixes; without it, the control is shown whenever its feature is active. The shared settings UI renders these declarations generically and persists changes through the feature manager; feature IDs and behavior remain outside the UI.
 
 ## Implementation Methods and Fault Isolation
 

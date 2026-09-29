@@ -3,8 +3,12 @@ export default {
   name: 'English',
   strings: {
     settingsLabel: 'Bing Enhanced settings',
-    searchResultsNewTab: 'Open search results in a new tab',
-    searchResultsCurrentTab: 'Open search results in the current tab',
+    searchResultsNewTab: 'Open general search results in a new tab',
+    searchResultsCurrentTab: 'Open general search results in the current tab',
+    videoResultsNewTab: 'Open video results in a new tab',
+    videoResultsCurrentTab: 'Open video results in the current tab',
+    newsResultsNewTab: 'Open news posts in a new tab',
+    newsResultsCurrentTab: 'Open news posts in the current tab',
     dialogTitle: 'Module settings',
     close: 'Close',
     closeSettings: 'Close settings',
@@ -65,10 +69,19 @@ export default {
     },
     'search-result-opening': {
       name: 'Search result opening behavior',
-      description: 'Choose whether Bing search results open in a new or the current tab.',
+      description: 'Choose independently whether general search results, video results, and news posts open in a new or the current tab.',
       settings: {
         openInNewTab: {
-          label: 'Open search results in a new tab',
+          label: 'Open general search results in a new tab',
+          description: 'Controls links on the general search results tab.',
+        },
+        openVideoResultsInNewTab: {
+          label: 'Open video results in a new tab',
+          description: 'Controls video results on the Videos tab.',
+        },
+        openNewsResultsInNewTab: {
+          label: 'Open news posts in a new tab',
+          description: 'Controls news posts on the News tab.',
         },
       },
     },

@@ -19,6 +19,7 @@ const styles = `
     --be-divider: var(--smtc-stroke-divider-subtle, rgb(0 0 0 / 12%));
     display: inline-flex;
     height: 44px;
+    flex: 0 0 auto;
     margin-inline-start: 4px;
     vertical-align: middle;
     color: var(--be-foreground);
@@ -125,6 +126,11 @@ function isSettingsRoute(pathname) {
   return SETTINGS_ROUTES.some((route) => pathname === route || pathname.startsWith(`${route}/`));
 }
 
+function matchesToolbarRoute(pathname, routes) {
+  return !Array.isArray(routes)
+    || routes.some((route) => pathname === route || pathname.startsWith(`${route}/`));
+}
+
 function makeElement(tag, className, text) {
   const element = document.createElement(tag);
   if (className) element.className = className;
@@ -160,7 +166,9 @@ function createSettingsHost(manager) {
     for (const feature of features) {
       if (!feature.enabled || !['starting', 'running'].includes(feature.status)) continue;
       for (const setting of feature.settings) {
-        if (setting.type !== 'toggle' || !setting.toolbarToggle) continue;
+        if (setting.type !== 'toggle'
+          || !setting.toolbarToggle
+          || !matchesToolbarRoute(location.pathname, setting.toolbarToggle.routes)) continue;
         const controlId = JSON.stringify([feature.id, setting.key]);
         activeControls.add(controlId);
         let button = toolbarButtons.get(controlId);
@@ -466,6 +474,7 @@ function createSettingsHost(manager) {
   });
   return {
     host,
+    refreshToolbarToggles: updateToolbarToggles,
     destroy() {
       unsubscribe();
       unsubscribeLanguage();
@@ -477,7 +486,8 @@ function createSettingsHost(manager) {
 
 export function startSettingsUI(manager, logger = console) {
   let settingsHost = null;
-  let observedRoot = null;
+  let observedRoots = [];
+  let scrollFrame = null;
   const observer = new MutationObserver(syncSafely);
 
   function syncSafely() {
@@ -488,39 +498,74 @@ export function startSettingsUI(manager, logger = console) {
     }
   }
 
+  function getActiveSearchForm() {
+    const miniHeader = document.querySelector('#miniheader');
+    const miniForm = miniHeader?.querySelector('form#sb_form');
+    const miniStyle = miniHeader ? window.getComputedStyle(miniHeader) : null;
+    if (miniForm
+      && miniHeader.getAttribute('aria-hidden') !== 'true'
+      && miniStyle.display !== 'none'
+      && miniStyle.visibility !== 'hidden') {
+      return miniForm;
+    }
+    return document.querySelector('#b_header form#sb_form')
+      || document.querySelector('form#sb_form');
+  }
+
+  function observeHeaders() {
+    const roots = [...document.querySelectorAll('#b_header, #miniheader')];
+    if (roots.length === 0 && document.documentElement) roots.push(document.documentElement);
+    if (roots.length === observedRoots.length
+      && roots.every((root, index) => root === observedRoots[index])) return;
+    observer.disconnect();
+    for (const root of roots) observer.observe(root, { childList: true, subtree: true });
+    observedRoots = roots;
+  }
+
   function sync() {
     const routeAllowed = isSettingsRoute(location.pathname);
-    const form = document.querySelector('#sb_form');
+    const form = routeAllowed ? getActiveSearchForm() : null;
     const searchbox = routeAllowed ? form?.querySelector('.b_searchboxForm[role="search"]') : null;
-    const target = form?.parentElement;
 
-    if (settingsHost && (!routeAllowed || !settingsHost.host.isConnected || settingsHost.host.parentElement !== target)) {
+    if (settingsHost && !routeAllowed) {
       settingsHost.destroy();
       settingsHost = null;
     }
-    if (searchbox && target && !settingsHost) {
-      settingsHost = createSettingsHost(manager);
-      form.after(settingsHost.host);
+    if (searchbox && form) {
+      if (!settingsHost) settingsHost = createSettingsHost(manager);
+      if (settingsHost.host.parentElement !== form || settingsHost.host.previousElementSibling !== searchbox) {
+        searchbox.after(settingsHost.host);
+      }
+    } else {
+      settingsHost?.host.remove();
     }
 
-    const root = target || document.documentElement || document;
-    if (root !== observedRoot) {
-      observer.disconnect();
-      observer.observe(root, { childList: true, subtree: true });
-      observedRoot = root;
-    }
+    observeHeaders();
+  }
+
+  function onScroll() {
+    if (scrollFrame !== null) return;
+    scrollFrame = window.requestAnimationFrame(() => {
+      scrollFrame = null;
+      syncSafely();
+      settingsHost?.refreshToolbarToggles();
+    });
   }
 
   function onNavigation() {
     syncSafely();
+    settingsHost?.refreshToolbarToggles();
   }
 
+  window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('popstate', onNavigation);
   window.addEventListener('urlchange', onNavigation);
   syncSafely();
 
   return () => {
     observer.disconnect();
+    if (scrollFrame !== null) window.cancelAnimationFrame(scrollFrame);
+    window.removeEventListener('scroll', onScroll);
     window.removeEventListener('popstate', onNavigation);
     window.removeEventListener('urlchange', onNavigation);
     settingsHost?.destroy();
