@@ -3,6 +3,8 @@ export default {
   name: 'Українська',
   strings: {
     settingsLabel: 'Налаштування Bing Enhanced',
+    searchResultsNewTab: 'Відкривати результати пошуку в новій вкладці',
+    searchResultsCurrentTab: 'Відкривати результати пошуку в поточній вкладці',
     dialogTitle: 'Налаштування модулів',
     close: 'Закрити',
     closeSettings: 'Закрити налаштування',
@@ -60,6 +62,15 @@ export default {
     'scope-navigation-current-tab': {
       name: 'Вкладки Bing у поточному вікні',
       description: 'Відкриває вкладки «Зображення», «Відео», «Карти», «Новини» та «Рейси» в поточному вікні зі сторінки пошуку.',
+    },
+    'search-result-opening': {
+      name: 'Відкриття результатів пошуку',
+      description: 'Визначає, чи відкривати результати пошуку Bing у новій або поточній вкладці.',
+      settings: {
+        openInNewTab: {
+          label: 'Відкривати результати пошуку в новій вкладці',
+        },
+      },
     },
     'bing-link-unwrapper': {
       name: 'Прямі посилання на результати пошуку',

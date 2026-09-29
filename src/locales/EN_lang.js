@@ -3,6 +3,8 @@ export default {
   name: 'English',
   strings: {
     settingsLabel: 'Bing Enhanced settings',
+    searchResultsNewTab: 'Open search results in a new tab',
+    searchResultsCurrentTab: 'Open search results in the current tab',
     dialogTitle: 'Module settings',
     close: 'Close',
     closeSettings: 'Close settings',
@@ -60,6 +62,15 @@ export default {
     'scope-navigation-current-tab': {
       name: 'Bing tabs in the current window',
       description: 'Open the Images, Videos, Maps, News, and Flights tabs in the current window from search results.',
+    },
+    'search-result-opening': {
+      name: 'Search result opening behavior',
+      description: 'Choose whether Bing search results open in a new or the current tab.',
+      settings: {
+        openInNewTab: {
+          label: 'Open search results in a new tab',
+        },
+      },
     },
     'bing-link-unwrapper': {
       name: 'Direct search-result links',

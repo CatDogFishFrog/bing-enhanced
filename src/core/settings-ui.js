@@ -27,7 +27,7 @@ const styles = `
   * { box-sizing: border-box; }
   button, input, select { font: inherit; }
   button { color: inherit; }
-  .gear {
+  .gear, .toolbar-toggle {
     display: grid;
     width: 44px;
     height: 44px;
@@ -38,7 +38,8 @@ const styles = `
     background: transparent;
     cursor: pointer;
   }
-  .gear:hover, .icon-button:hover { background: var(--cardsbk2, var(--smtc-background-ctrl-subtle-hover, #f3f3f3)); }
+  .gear:hover, .toolbar-toggle:hover, .icon-button:hover { background: var(--cardsbk2, var(--smtc-background-ctrl-subtle-hover, #f3f3f3)); }
+  .toolbar-toggle:disabled { cursor: default; opacity: .45; }
   button:focus-visible, input:focus-visible, select:focus-visible {
     outline: 2px solid #0078d4;
     outline-offset: 2px;
@@ -152,6 +153,53 @@ function createSettingsHost(manager) {
   gear.title = translate('settingsLabel');
   gear.append(makeIcon('M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm0-6v2m0 15v2m9-9h-2M5 12H3m15.36-6.36-1.42 1.42M7.06 16.94l-1.42 1.42m12.72 0-1.42-1.42M7.06 7.06 5.64 5.64M19 12a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z'));
   shadow.append(style, gear);
+  const toolbarButtons = new Map();
+
+  function updateToolbarToggles(features = manager.getFeaturesState()) {
+    const activeControls = new Set();
+    for (const feature of features) {
+      if (!feature.enabled || !['starting', 'running'].includes(feature.status)) continue;
+      for (const setting of feature.settings) {
+        if (setting.type !== 'toggle' || !setting.toolbarToggle) continue;
+        const controlId = JSON.stringify([feature.id, setting.key]);
+        activeControls.add(controlId);
+        let button = toolbarButtons.get(controlId);
+        if (!button) {
+          button = makeElement('button', 'toolbar-toggle');
+          button.type = 'button';
+          button.dataset.toolbarToggle = controlId;
+          button.dataset.featureId = feature.id;
+          button.dataset.settingKey = setting.key;
+          button.addEventListener('click', () => {
+            const { featureId, settingKey } = button.dataset;
+            const currentFeature = manager.getFeaturesState().find((item) => item.id === featureId);
+            if (currentFeature?.enabled) {
+              void manager.setSetting(featureId, settingKey, currentFeature.values[settingKey] !== true);
+            }
+          });
+          toolbarButtons.set(controlId, button);
+        }
+        const enabled = feature.values[setting.key] === true;
+        const labelKey = enabled ? setting.toolbarToggle.trueLabel : setting.toolbarToggle.falseLabel;
+        const label = translate(labelKey);
+        button.title = label;
+        button.setAttribute('aria-label', label);
+        button.replaceChildren(makeIcon(enabled ? setting.toolbarToggle.trueIcon : setting.toolbarToggle.falseIcon));
+      }
+    }
+
+    for (const [controlId, button] of toolbarButtons) {
+      if (!activeControls.has(controlId)) {
+        button.remove();
+        toolbarButtons.delete(controlId);
+      }
+    }
+    let previousButton = gear;
+    for (const button of toolbarButtons.values()) {
+      previousButton.after(button);
+      previousButton = button;
+    }
+  }
 
   let backdrop = null;
   let previouslyFocused = null;
@@ -352,6 +400,7 @@ function createSettingsHost(manager) {
   }
 
   function updateStatuses(features) {
+    updateToolbarToggles(features);
     if (!backdrop) return;
     for (const feature of features) {
       const displayFeature = translateFeature(feature);
@@ -412,6 +461,7 @@ function createSettingsHost(manager) {
   const unsubscribeLanguage = subscribeLanguage(() => {
     gear.setAttribute('aria-label', translate('settingsLabel'));
     gear.title = translate('settingsLabel');
+    updateToolbarToggles();
     refreshDialog();
   });
   return {
