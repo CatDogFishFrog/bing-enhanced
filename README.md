@@ -56,6 +56,4 @@ The module contract, settings schema, method fallback order, and cleanup require
 
 The settings interface is available in English and Ukrainian. See [Localization](docs/localization.md) to add another language with a single locale file. The debug toggle in the Tampermonkey menu shows its current state; debug mode adds detailed console traces.
 
-See [MEMORY.md](MEMORY.md) for working notes; it is local and excluded from Git.
-
 The [Bing page environment recorder](tools/bing-environment-recorder.user.js) is installed separately and is not included in the main userscript. Capture scenarios, report structure, privacy considerations, and parsing examples are covered in the [Bing Environment Recorder guide](docs/bing-environment-recorder.md).
