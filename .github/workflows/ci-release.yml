@@ -14,12 +14,21 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
       - run: npm ci
       - run: npm run check
+      - name: Validate commit messages
+        uses: orhun/git-cliff-action@v4
+        with:
+          args: --unreleased --strip header
+        env:
+          GITHUB_REPO: ${{ github.repository }}
+          OUTPUT: dist/release-notes-preview.md
       - uses: actions/upload-artifact@v4
         with:
           name: bing-enhanced-user-script
@@ -33,10 +42,19 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/download-artifact@v4
         with:
           name: bing-enhanced-user-script
           path: dist
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@v4
+        with:
+          args: --latest --strip header
+        env:
+          GITHUB_REPO: ${{ github.repository }}
+          OUTPUT: dist/release-notes.md
       - env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create "$GITHUB_REF_NAME" dist/bing-enhanced.user.js --generate-notes
+        run: gh release create "$GITHUB_REF_NAME" dist/bing-enhanced.user.js --notes-file dist/release-notes.md

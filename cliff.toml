@@ -1,0 +1,43 @@
+[changelog]
+header = ""
+body = """
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group }}
+{% for commit in commits %}
+- {% if commit.breaking %}**Breaking change:** {% endif %}{% if commit.scope %}{{ commit.scope }}: {% endif %}{{ commit.message | upper_first }}
+{% endfor %}
+{% endfor %}
+{% if version and previous.version %}
+**Full Changelog**: https://github.com/CatDogFishFrog/bing-enhanced/compare/{{ previous.version }}...{{ version }}
+{% endif %}
+"""
+trim = true
+format = true
+
+[git]
+conventional_commits = true
+filter_unconventional = false
+require_conventional = true
+protect_breaking_commits = true
+tag_pattern = "v[0-9].*"
+sort_commits = "newest"
+commit_parsers = [
+  # Keep this already-published pre-convention commit out of future notes without rewriting history.
+  { sha = "d20519219a9938959c6a4aca39aab8a28f9fdfba", skip = true },
+  { message = "^Merge ", skip = true },
+  { message = "^[a-z]+(\\([^)]*\\))?!:", group = "Breaking Changes" },
+  { footer = "^BREAKING CHANGE:", group = "Breaking Changes" },
+  { message = "^feat", group = "Features" },
+  { message = "^fix", group = "Bug Fixes" },
+  { message = "^perf", group = "Performance" },
+  { message = "^revert", group = "Reverts" },
+  { message = "^docs?", skip = true },
+  { message = "^test", skip = true },
+  { message = "^ci", skip = true },
+  { message = "^build", skip = true },
+  { message = "^style", skip = true },
+  { message = "^chore", skip = true },
+  { message = "^refactor", skip = true },
+  { message = "^deps", skip = true },
+  { message = ".*", group = "Other Changes" },
+]

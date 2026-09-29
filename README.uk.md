@@ -30,6 +30,8 @@
 
 Потрібен Node.js версії **22.12 або новішої**.
 
+Правила комітів і релізів: [англійською](CONTRIBUTING.md) та [українською](CONTRIBUTING.uk.md).
+
 ```sh
 npm ci
 npm run check

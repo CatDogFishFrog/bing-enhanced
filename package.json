@@ -27,10 +27,14 @@
     "build": "vite build",
     "lint": "eslint .",
     "test": "node --test",
-    "check": "npm run lint && npm test && npm run build"
+    "check": "npm run lint && npm test && npm run build",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
     "eslint": "^10.11.0",
+    "husky": "^9.1.7",
     "vite": "^8.3.1",
     "vite-plugin-monkey": "^8.1.1"
   }

@@ -28,6 +28,8 @@
 
 Requires Node.js **22.12 or newer**.
 
+See [Contributing](CONTRIBUTING.md) for commit message and release guidelines.
+
 ```sh
 npm ci
 npm run check
