@@ -1,20 +1,24 @@
-import { normalizeFeatureConfiguration, normalizeSettingValue } from './feature-settings.js';
+import {
+  normalizeFeatureConfiguration,
+  normalizeSettingValue,
+} from "./feature-settings.js";
 
-const SETTINGS_STORAGE_KEY = 'bing-enhanced:feature-settings';
+const SETTINGS_STORAGE_KEY = "bing-enhanced:feature-settings";
 
 function featureId(feature) {
-  return feature?.id || feature?.name || 'unknown-feature';
+  return feature?.id || feature?.name || "unknown-feature";
 }
 
 function defaultStorage() {
   return {
     get() {
-      return typeof GM_getValue === 'function'
+      return typeof GM_getValue === "function"
         ? GM_getValue(SETTINGS_STORAGE_KEY, {})
         : {};
     },
     set(value) {
-      if (typeof GM_setValue === 'function') GM_setValue(SETTINGS_STORAGE_KEY, value);
+      if (typeof GM_setValue === "function")
+        GM_setValue(SETTINGS_STORAGE_KEY, value);
     },
   };
 }
@@ -35,7 +39,7 @@ export function createFeatureManager(features, context = {}) {
   try {
     stored = storage.get() || {};
   } catch (error) {
-    logger.warn('Could not load feature settings; using defaults.', error);
+    logger.warn("Could not load feature settings; using defaults.", error);
   }
 
   for (const feature of features) {
@@ -47,13 +51,16 @@ export function createFeatureManager(features, context = {}) {
     } catch (error) {
       configuration = { enabled: true, settings: {} };
       configurationError = error;
-      logger.error(`[Bing Enhanced] Feature "${id}" has invalid settings metadata.`, error);
+      logger.error(
+        `[Bing Enhanced] Feature "${id}" has invalid settings metadata.`,
+        error,
+      );
     }
     runtime.set(id, {
       feature,
       configuration,
       configurationError,
-      status: configurationError ? 'error' : 'pending',
+      status: configurationError ? "error" : "pending",
       error: configurationError?.message || null,
       cleanup: null,
       operation: Promise.resolve(),
@@ -68,17 +75,19 @@ export function createFeatureManager(features, context = {}) {
       try {
         listener(state);
       } catch (error) {
-        logger.warn('A feature settings listener failed.', error);
+        logger.warn("A feature settings listener failed.", error);
       }
     }
   }
 
   function persist() {
-    const value = Object.fromEntries([...runtime].map(([id, entry]) => [id, entry.configuration]));
+    const value = Object.fromEntries(
+      [...runtime].map(([id, entry]) => [id, entry.configuration]),
+    );
     try {
       storage.set(value);
     } catch (error) {
-      logger.error('Could not save feature settings.', error);
+      logger.error("Could not save feature settings.", error);
     }
   }
 
@@ -86,11 +95,13 @@ export function createFeatureManager(features, context = {}) {
     return [...runtime].map(([id, entry]) => ({
       id,
       name: entry.feature?.name || id,
-      description: entry.feature?.description || '',
+      description: entry.feature?.description || "",
       enabled: entry.configuration.enabled,
       settings: entry.configurationError
         ? []
-        : Array.isArray(entry.feature?.settings) ? entry.feature.settings : [],
+        : Array.isArray(entry.feature?.settings)
+          ? entry.feature.settings
+          : [],
       values: { ...entry.configuration.settings },
       status: entry.status,
       error: entry.error,
@@ -100,7 +111,10 @@ export function createFeatureManager(features, context = {}) {
   function enqueue(entry, operation) {
     const nextOperation = entry.operation.then(operation, operation);
     entry.operation = nextOperation.catch((error) => {
-      logger.error(`[Bing Enhanced] Feature "${featureId(entry.feature)}" operation failed.`, error);
+      logger.error(
+        `[Bing Enhanced] Feature "${featureId(entry.feature)}" operation failed.`,
+        error,
+      );
     });
     return entry.operation;
   }
@@ -110,7 +124,10 @@ export function createFeatureManager(features, context = {}) {
     try {
       await entry.cleanup();
     } catch (error) {
-      logger.error(`Feature "${entry.feature.name}" failed during cleanup.`, error);
+      logger.error(
+        `Feature "${entry.feature.name}" failed during cleanup.`,
+        error,
+      );
     }
     entry.cleanup = null;
   }
@@ -121,30 +138,32 @@ export function createFeatureManager(features, context = {}) {
     entry.error = null;
 
     if (entry.configurationError) {
-      entry.status = 'error';
-      entry.error = entry.configurationError.message || 'Invalid feature settings metadata.';
+      entry.status = "error";
+      entry.error =
+        entry.configurationError.message ||
+        "Invalid feature settings metadata.";
       notify();
       return;
     }
 
     if (!entry.configuration.enabled) {
-      entry.status = 'disabled';
+      entry.status = "disabled";
       notify();
       return;
     }
 
     try {
-      if (typeof feature?.start !== 'function') {
-        throw new TypeError('Feature must provide a start() function.');
+      if (typeof feature?.start !== "function") {
+        throw new TypeError("Feature must provide a start() function.");
       }
-      if (typeof feature.matches === 'function' && !feature.matches(context)) {
-        entry.status = 'not-applicable';
+      if (typeof feature.matches === "function" && !feature.matches(context)) {
+        entry.status = "not-applicable";
         logger.debug(`Skipping feature "${name}" on this route.`);
         notify();
         return;
       }
 
-      entry.status = 'starting';
+      entry.status = "starting";
       notify();
       logger.info(`Starting feature "${name}".`);
       const result = await feature.start({
@@ -153,29 +172,36 @@ export function createFeatureManager(features, context = {}) {
       });
 
       if (result?.applied === false) {
-        entry.status = 'error';
-        entry.error = 'No implementation method could be applied.';
+        entry.status = "error";
+        entry.error = "No implementation method could be applied.";
       } else {
-        entry.status = 'running';
+        entry.status = "running";
         entry.cleanup = result?.cleanup || result?.result?.cleanup || null;
         logger.info(`Feature "${name}" started.`);
       }
     } catch (error) {
-      entry.status = 'error';
+      entry.status = "error";
       entry.error = error?.message || String(error);
-      logger.error(`[Bing Enhanced] Feature "${name}" failed during startup; other features will continue.`, error);
+      logger.error(
+        `[Bing Enhanced] Feature "${name}" failed during startup; other features will continue.`,
+        error,
+      );
     }
     notify();
   }
 
   async function start() {
-    await Promise.all([...runtime.values()].map((entry) => enqueue(entry, () => startEntry(entry))));
+    await Promise.all(
+      [...runtime.values()].map((entry) =>
+        enqueue(entry, () => startEntry(entry)),
+      ),
+    );
     return getFeaturesState();
   }
 
   function setEnabled(id, enabled) {
     const entry = runtime.get(id);
-    if (!entry || typeof enabled !== 'boolean') return;
+    if (!entry || typeof enabled !== "boolean") return;
     return enqueue(entry, async () => {
       entry.configuration.enabled = enabled;
       persist();
@@ -186,13 +212,18 @@ export function createFeatureManager(features, context = {}) {
 
   function setSetting(id, key, value) {
     const entry = runtime.get(id);
-    const definition = entry?.feature?.settings?.find((setting) => setting.key === key);
+    const definition = entry?.feature?.settings?.find(
+      (setting) => setting.key === key,
+    );
     if (!entry || !definition) return;
 
     return enqueue(entry, async () => {
-      entry.configuration.settings[key] = normalizeSettingValue(definition, value);
+      entry.configuration.settings[key] = normalizeSettingValue(
+        definition,
+        value,
+      );
       persist();
-      if (entry.configuration.enabled && entry.status === 'running') {
+      if (entry.configuration.enabled && entry.status === "running") {
         await stopEntry(entry);
         await startEntry(entry);
         return;
