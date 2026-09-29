@@ -12,10 +12,10 @@ export default defineConfig({
     monkey({
       entry: 'src/main.js',
       userscript: {
-        name: 'Bing Enhanced',
+        name: { '': 'Bing Enhanced', ...packageInfo.userscriptMetadata.name },
         namespace: 'https://github.com/CatDogFishFrog',
         version: packageInfo.version,
-        description: packageInfo.description,
+        description: { '': packageInfo.description, ...packageInfo.userscriptMetadata.description },
         author: packageInfo.author,
         license: packageInfo.license,
         homepageURL: packageInfo.homepage,
