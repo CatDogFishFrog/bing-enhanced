@@ -22,21 +22,21 @@ export function handleScopeNavigationClick(event, logger) {
   if (!link || link.getAttribute('target')?.toLowerCase() !== '_blank') return false;
 
   link.removeAttribute('target');
-  logger.debug('Opening a Bing scope tab in the current window.', { href: link.href });
+  logger.debug('Navigating from general search to a Bing section in the current tab.', { href: link.href });
   return true;
 }
 
 export const scopeNavigationCurrentTab = {
   id: 'scope-navigation-current-tab',
-  name: 'Bing tabs in the current window',
-  description: 'Open the Images, Videos, Maps, News, and Flights tabs in the current window from search results.',
+  name: 'Bing section tabs open in the current tab',
+  description: 'From the main general-search tab, open the Videos, Images, Maps, News, and Flights sections in the current tab instead of a new window.',
   matches() {
     return location.pathname === '/search';
   },
   start({ logger }) {
     const onClick = (event) => handleScopeNavigationClick(event, logger);
     document.addEventListener('click', onClick, true);
-    logger.info('Keeping Bing scope tabs in the current window on search results.');
+    logger.info('Bing section tabs selected from general search will stay in the current tab.');
     return {
       applied: true,
       cleanup() {

@@ -1,6 +1,6 @@
 # Bing Enhanced
 
-**Bing Enhanced** is a Tampermonkey userscript that makes everyday Bing use better by removing many annoyances and improving the overall experience. You'll find descriptions of its features below.
+**Bing Enhanced** is a Tampermonkey userscript that skips Bing's intermediate pages when you follow search results, opens videos directly on YouTube or TikTok, and adds a few navigation settings.
 
 [Українська версія](README.uk.md)
 
@@ -8,25 +8,19 @@
 
 ## For Users
 
-### Implemented
+### Features
 
-- Videos in search results or on the Videos tab open instantly on YouTube, just as they should! The script does not redirect; it replaces the links themselves with the correct ones, so videos open right away.
-- TikTok short videos also open directly on TikTok. Their links are replaced too, without a redirect.
-- The Videos, Images, Maps, News, and Flights tabs open in the current window when selected from search results.
-- Search results and all other internal site links open directly instead of going through intermediate analytics links. All navigation is instant, with no analytics loading!
-- A toggle beside the settings gear independently controls whether general search results, videos, and news posts open in a new or the current tab. By default, each preserves Bing's new-tab behavior.
-
-### Planned
-
-- Improve how images open in the Images tab. The current experience is incredibly inconvenient: the image takes up a tiny part of the screen, making it impossible to inspect, and the navigation is awful...
-- Maybe do something with Rewards.
-- Maybe change the search-results layout by combining the best ideas from different search engines.
+- YouTube links in Bing Search and Videos results open directly on YouTube.
+- TikTok short-video links on Bing Videos open directly on TikTok.
+- Search results go straight to their destination instead of opening an intermediate Bing page first.
+- From the main general-search tab, the Videos, Images, Maps, News, and Flights sections open in the current tab instead of a new window.
+- Separate settings control whether general search results, videos, and news open in the current or a new tab. The defaults preserve Bing's new-tab behavior.
 
 ### Install
 
-1. Install [Tampermonkey](https://www.tampermonkey.net/) in Chrome or Edge.
-2. [Click here to install the userscript](https://github.com/CatDogFishFrog/bing-enhanced/releases/latest/download/bing-enhanced.user.js), then confirm the installation.
-3. Done. A settings button will appear to the right of the search box on Bing's search page. Use it to turn features on or off.
+1. Install [Tampermonkey](https://www.tampermonkey.net/) in Chrome or Edge. These are the browsers currently tested with the script.
+2. [Install Bing Enhanced from the latest GitHub Release](https://github.com/CatDogFishFrog/bing-enhanced/releases/latest/download/bing-enhanced.user.js) and confirm the prompt in Tampermonkey.
+3. Open Bing Search, Videos, Images, or News. The settings button appears beside the search box.
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "name": "bing-enhanced",
-  "version": "0.5.0",
-  "description": "Modular userscript for improving the Bing experience",
+  "version": "0.5.1",
+  "description": "Tampermonkey userscript that skips Bing's intermediate search pages and opens videos directly on YouTube or TikTok",
   "type": "module",
   "private": true,
   "license": "MIT",

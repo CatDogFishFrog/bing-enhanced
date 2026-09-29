@@ -39,7 +39,7 @@ export default {
   features: {
     'video-links-search': {
       name: 'Bing search video links',
-      description: 'Open supported Bing video results directly on YouTube.',
+       description: 'When a Bing video result links to YouTube, open it directly on YouTube.',
       settings: {
         methodOrder: {
           label: 'Method order',
@@ -50,7 +50,7 @@ export default {
     },
     'video-links-video-page': {
       name: 'Bing video page links',
-      description: 'Open supported Bing Video results directly on YouTube.',
+       description: 'When a Bing Videos result links to YouTube, open it directly on YouTube.',
       settings: {
         methodOrder: {
           label: 'Method order',
@@ -64,8 +64,8 @@ export default {
       description: 'Open Bing TikTok video results directly on TikTok.',
     },
     'scope-navigation-current-tab': {
-      name: 'Bing tabs in the current window',
-      description: 'Open the Images, Videos, Maps, News, and Flights tabs in the current window from search results.',
+      name: 'Bing section tabs open in the current tab',
+      description: 'From the main general-search tab, open the Videos, Images, Maps, News, and Flights sections in the current tab instead of a new window.',
     },
     'search-result-opening': {
       name: 'Search result opening behavior',
